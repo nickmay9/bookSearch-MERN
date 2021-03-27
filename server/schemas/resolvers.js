@@ -22,7 +22,7 @@ const resolvers = {
 
             return { token, user };
         },
-        login: async (parent, { email, password }) => {
+        loginUser: async (parent, { email, password }) => {
             const user = await User.findOne({ email });
 
             if(!user){
@@ -40,7 +40,6 @@ const resolvers = {
         },
         saveBook: async (parent, { input }, context) => {
             if(context.user){
-                console.log(typeof input);
                 const updatedUser = await User.findOneAndUpdate(
                     { _id: context.user._id },
                     { $addToSet: { savedBooks: input } },
@@ -56,9 +55,9 @@ const resolvers = {
             if(context.user){
                 const updatedUser = await User.findOneAndUpdate(
                     { _id: context.user._id },
-                    { $pull: { savedBooks: { bookId: bookId } } },
+                    { $pull: { savedBooks: { bookId } } },
                     { new: true }
-                ).populate('savedBooks');
+                );
 
                 return updatedUser;
             }
